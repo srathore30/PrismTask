@@ -1,0 +1,44 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: rathore.as09@gmail.com
+    password: rsgg dltj zype rqbr
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      idle-timeout: 30000
+      leak-detection-threshold: 2000
+      connection-timeout: 30000
+      maximum-pool-size: 5
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  application:
+    name: vendor-management
+server:
+  port: 8098
+  servlet:
+    context-path: /Task-management-service
+application:
+  config:
+    trace: true
+jwt:
+  tokenValidityInSeconds: 72000 #2 hours
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+

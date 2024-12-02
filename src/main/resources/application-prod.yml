@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:mysql://api.prismgate.in:3306/gate_db
+    username: PrismGate
+    password: TestUser123!

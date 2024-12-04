@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 public enum ApiErrorCodes implements Error{
     SUCCESS(40001, "Success"),
     NOT_FOUND(40002, "not found"),
-    ALREADY_EXIST(40003, "already exist"),
+    USER_ALREADY_EXIST(40003, "User already exist"),
     INVALID_INPUT(40004, "Invalid request input"),
-    INVALID_USERNAME_OR_PASSWORD(40005,"invalid usename or password"),
+    INVALID_USERNAME_OR_PASSWORD(40005,"invalid username or password"),
     USER_NOT_FOUND(40006, "User not found");
 
     private int errorCode;

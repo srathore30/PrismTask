@@ -1,6 +1,10 @@
 package Task_Management_service.entity;
 
+import Task_Management_service.constant.UserRole;
+import Task_Management_service.constant.UserStatus;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,5 +19,9 @@ public class UserEntity extends BaseEntity{
     String password;
     String email;
     String mobileNo;
+    @Enumerated(EnumType.STRING)
+    UserRole role;
+    @Enumerated(EnumType.STRING)
+    UserStatus status;
 
 }

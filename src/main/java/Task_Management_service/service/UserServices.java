@@ -6,8 +6,12 @@ import Task_Management_service.dto.response.JwtResponse;
 import Task_Management_service.dto.response.UserResDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.List;
+
 public interface UserServices extends UserDetailsService {
     UserResDto createUser(UserReqDto userReqDto);
     JwtResponse loginUser(JwtRequest jwtRequest);
     UserResDto getUserById(Long id);
+    List<UserResDto> getAllUsers();
+    void deleteUserById(Long id);
 }

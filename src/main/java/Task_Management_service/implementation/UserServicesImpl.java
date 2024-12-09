@@ -3,6 +3,7 @@ package Task_Management_service.implementation;
 import Task_Management_service.AuthUtils.JwtHelper;
 import Task_Management_service.config.AuthConfig;
 import Task_Management_service.constant.ApiErrorCodes;
+import Task_Management_service.constant.UserStatus;
 import Task_Management_service.dto.request.JwtRequest;
 import Task_Management_service.dto.request.UserReqDto;
 import Task_Management_service.dto.response.JwtResponse;
@@ -17,8 +18,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServicesImpl implements UserServices {
@@ -42,8 +46,18 @@ public class UserServicesImpl implements UserServices {
             );
         }
         UserEntity user = mapToEntity(userReqDto);
+        user.setStatus(UserStatus.ACTIVE);
         UserEntity savedUser = userRepo.save(user);
         return mapToDto(savedUser);
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
+        UserEntity userEntity = userRepo.findUserById(id)
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.USER_NOT_FOUND.getErrorCode(),ApiErrorCodes.USER_NOT_FOUND.getErrorMessage()
+                ));
+        userEntity.setStatus(UserStatus.INACTIVE);
+        userRepo.save(userEntity);
     }
 
     @Override
@@ -89,12 +103,24 @@ public class UserServicesImpl implements UserServices {
         );
     }
 
+    @Override
+    public List<UserResDto> getAllUsers() {
+        List<UserEntity> userEntityList = userRepo.findAll();
+        return userEntityList.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+
     private UserResDto mapToDto(UserEntity userEntity) {
         UserResDto userResDto = new UserResDto();
         userResDto.setId(userEntity.getId());
         userResDto.setEmail(userEntity.getEmail());
         userResDto.setUsername(userEntity.getUsername());
         userResDto.setMobileNo(userEntity.getMobileNo());
+        userResDto.setRole(userEntity.getRole());
+        userResDto.setStatus(userEntity.getStatus());
+
         return userResDto;
     }
 
@@ -104,6 +130,7 @@ public class UserServicesImpl implements UserServices {
         userEntity.setUsername(userReqDto.getUsername());
         userEntity.setPassword(authConfig.passwordEncoder().encode(userReqDto.getPassword()));
         userEntity.setMobileNo(userReqDto.getMobileNo());
+        userEntity.setRole(userReqDto.getRole());
         return userEntity;
     }
 }

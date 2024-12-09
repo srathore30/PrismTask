@@ -6,9 +6,12 @@ import Task_Management_service.dto.response.JwtResponse;
 import Task_Management_service.dto.response.UserResDto;
 import Task_Management_service.service.UserServices;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,4 +37,17 @@ public class UserController {
         UserResDto userResDto = userServices.getUserById(id);
         return new ResponseEntity<>(userResDto, HttpStatus.OK);
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<UserResDto>> getAllUsers() {
+        List<UserResDto> userResDtoList = userServices.getAllUsers();
+        return new ResponseEntity<>(userResDtoList, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
+        userServices.deleteUserById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

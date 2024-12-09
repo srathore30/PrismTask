@@ -11,7 +11,7 @@ import Task_Management_service.entity.UserEntity;
 import Task_Management_service.exception.NoSuchElementFoundException;
 import Task_Management_service.exception.ValidationException;
 import Task_Management_service.repository.UserRepo;
-import Task_Management_service.service.UserServices;
+import Task_Management_service.services.UserServices;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

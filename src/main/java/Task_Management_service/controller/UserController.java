@@ -1,10 +1,10 @@
-package Task_Management_service.controller;
+package Task_Management_service.Controller;
 
 import Task_Management_service.dto.request.JwtRequest;
 import Task_Management_service.dto.request.UserReqDto;
 import Task_Management_service.dto.response.JwtResponse;
 import Task_Management_service.dto.response.UserResDto;
-import Task_Management_service.service.UserServices;
+import Task_Management_service.services.UserServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

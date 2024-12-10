@@ -4,14 +4,9 @@ import Task_Management_service.AuthUtils.JwtHelper;
 import Task_Management_service.config.AuthConfig;
 import Task_Management_service.constant.ApiErrorCodes;
 import Task_Management_service.constant.UserStatus;
-import Task_Management_service.dto.request.JwtRequest;
-import Task_Management_service.dto.request.TeamMembersReq;
-import Task_Management_service.dto.request.TeamReq;
-import Task_Management_service.dto.request.UserReqDto;
-import Task_Management_service.dto.response.JwtResponse;
-import Task_Management_service.dto.response.TeamMembersRes;
-import Task_Management_service.dto.response.TeamRes;
-import Task_Management_service.dto.response.UserResDto;
+import Task_Management_service.dto.request.*;
+import Task_Management_service.dto.response.*;
+import Task_Management_service.entity.TaskEntity;
 import Task_Management_service.entity.TeamEntity;
 import Task_Management_service.entity.TeamMembers;
 import Task_Management_service.entity.UserEntity;
@@ -20,7 +15,7 @@ import Task_Management_service.exception.ValidationException;
 import Task_Management_service.repository.TeamMembersRepo;
 import Task_Management_service.repository.TeamRepo;
 import Task_Management_service.repository.UserRepo;
-import Task_Management_service.service.TeamServices;
+import Task_Management_service.services.TeamServices;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -52,6 +47,14 @@ public class TeamImpl implements TeamServices {
         TeamEntity savedTeam = teamRepo.save(teamEntity);
         return mapToDto(savedTeam);
 
+    }
+    @Override
+    public TeamRes updateTeam(Long id, TeamReq teamReq) {
+        TeamEntity teamEntity = teamRepo.findById(id)
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.TEAM_NOT_FOUND.getErrorCode(), ApiErrorCodes.TEAM_NOT_FOUND.getErrorMessage()));
+        teamEntity.setTeamName(teamReq.getTeamName());
+        teamEntity.setDescription(teamReq.getDescription());
+        return mapToDto(teamRepo.save(teamEntity));
     }
 
     @Override

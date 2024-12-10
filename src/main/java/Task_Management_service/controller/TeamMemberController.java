@@ -4,10 +4,11 @@ import Task_Management_service.dto.request.TeamMembersReq;
 import Task_Management_service.dto.response.PaginatedResp;
 import Task_Management_service.dto.response.TeamMembersRes;
 import Task_Management_service.dto.response.UserResDto;
-import Task_Management_service.service.TeamMembersServices;
+import Task_Management_service.services.TeamMembersServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,13 +34,12 @@ public class TeamMemberController {
         TeamMembersRes resp = teamMembersServices.getTeamMemberById(id);
         return  ResponseEntity.status(HttpStatus.OK).body(resp);
     }
-//    @PutMapping("/{flatId}")
-//
-//    public ResponseEntity<String> updateFlatDetails(@Validated @RequestBody FlatUpdateReq flatUpdateReq, @PathVariable Long flatId){
-//        flatUpdateReq.setFlatOwnerId(flatId);
-//        flatOwnerService.updateFlatDetails(flatUpdateReq);
-//        return  ResponseEntity.status(HttpStatus.OK).body("Updated successfully");
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<TeamMembersRes> updateTeamMembers(@Validated @RequestBody TeamMembersReq teamMembersReq,@PathVariable Long id) {
+        TeamMembersRes updatedMember = teamMembersServices.updateTeamMember(id, teamMembersReq);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedMember);
+    }
+
 
     @GetMapping("/all")
     public ResponseEntity<List<TeamMembersRes>> getAllTeamMembers() {

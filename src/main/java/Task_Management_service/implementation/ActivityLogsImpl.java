@@ -8,7 +8,7 @@ import Task_Management_service.entity.UserEntity;
 import Task_Management_service.exception.NoSuchElementFoundException;
 import Task_Management_service.repository.ActivityLogsRepo;
 import Task_Management_service.repository.UserRepo;
-import Task_Management_service.service.ActivityLogService;
+import Task_Management_service.services.ActivityLogService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -2,7 +2,9 @@ package Task_Management_service.implementation;
 
 import Task_Management_service.constant.ApiErrorCodes;
 import Task_Management_service.dto.request.TeamMembersReq;
+import Task_Management_service.dto.request.TeamReq;
 import Task_Management_service.dto.response.TeamMembersRes;
+import Task_Management_service.dto.response.TeamRes;
 import Task_Management_service.entity.TeamEntity;
 import Task_Management_service.entity.TeamMembers;
 import Task_Management_service.entity.UserEntity;
@@ -11,7 +13,7 @@ import Task_Management_service.exception.ValidationException;
 import Task_Management_service.repository.TeamMembersRepo;
 import Task_Management_service.repository.TeamRepo;
 import Task_Management_service.repository.UserRepo;
-import Task_Management_service.service.TeamMembersServices;
+import Task_Management_service.services.TeamMembersServices;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,6 +46,29 @@ public class TeamMembersImpl implements TeamMembersServices {
         TeamMembers savedTeamMember = teamMembersRepo.save(teamMember);
         return mapToDto(savedTeamMember);
     }
+
+    @Override
+    public TeamMembersRes updateTeamMember(Long id, TeamMembersReq teamMembersReq) {
+        TeamMembers teamMembers = teamMembersRepo.findById(id)
+                .orElseThrow(() -> new NoSuchElementFoundException(
+                        ApiErrorCodes.TEAM_MEMBER_NOT_FOUND.getErrorCode(),ApiErrorCodes.TEAM_MEMBER_NOT_FOUND.getErrorMessage()));
+        TeamEntity team = teamRepo.findById(teamMembersReq.getTeamId())
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.TEAM_NOT_FOUND.getErrorCode(),ApiErrorCodes.TEAM_NOT_FOUND.getErrorMessage()));
+        UserEntity user = userRepo.findById(teamMembersReq.getUserId())
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.USER_NOT_FOUND.getErrorCode(),ApiErrorCodes.USER_NOT_FOUND.getErrorMessage()));
+        Optional<TeamMembers> existingMember = teamMembersRepo.findByTeamAndUser(team, user);
+        if (existingMember.isPresent() && !existingMember.get().getId().equals(id)) {
+            throw new ValidationException(
+                    ApiErrorCodes.USER_ALREADY_EXIST.getErrorCode(),ApiErrorCodes.USER_ALREADY_EXIST.getErrorMessage());
+        }
+        teamMembers.setTeam(team);
+        teamMembers.setUser(user);
+        teamMembers.setRole(teamMembersReq.getRole());
+
+        TeamMembers updatedMember = teamMembersRepo.save(teamMembers);
+        return mapToDto(updatedMember);
+    }
+
 
     @Override
     public void deleteTeamMemberById(Long id) {

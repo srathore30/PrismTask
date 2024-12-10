@@ -4,7 +4,7 @@ import Task_Management_service.dto.request.JwtRequest;
 import Task_Management_service.dto.request.UserReqDto;
 import Task_Management_service.dto.response.JwtResponse;
 import Task_Management_service.dto.response.UserResDto;
-import Task_Management_service.service.UserServices;
+import Task_Management_service.services.UserServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -31,6 +31,13 @@ public class UserController {
         JwtResponse jwtResponse = userServices.loginUser(jwtRequest);
         return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResDto> updateUser(@PathVariable Long id,@RequestBody UserReqDto userReqDto) {
+        UserResDto updatedUser = userServices.updateUser(id, userReqDto);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResDto> getUserById(@PathVariable Long id) {

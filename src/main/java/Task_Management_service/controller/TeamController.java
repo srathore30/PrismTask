@@ -2,10 +2,11 @@ package Task_Management_service.controller;
 
 import Task_Management_service.dto.request.TeamReq;
 import Task_Management_service.dto.response.TeamRes;
-import Task_Management_service.service.TeamServices;
+import Task_Management_service.services.TeamServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,13 +33,11 @@ public class TeamController {
         TeamRes resp = teamServices.getTeamById(id);
         return  ResponseEntity.status(HttpStatus.OK).body(resp);
     }
-//    @PutMapping("/{flatId}")
-//
-//    public ResponseEntity<String> updateFlatDetails(@Validated @RequestBody FlatUpdateReq flatUpdateReq, @PathVariable Long flatId){
-//        flatUpdateReq.setFlatOwnerId(flatId);
-//        flatOwnerService.updateFlatDetails(flatUpdateReq);
-//        return  ResponseEntity.status(HttpStatus.OK).body("Updated successfully");
-//    }
+    @PutMapping("/{teamId}")
+    public ResponseEntity<TeamRes> updateTeam(@Validated @RequestBody TeamReq teamReq,@PathVariable Long teamId) {
+        TeamRes updatedTeam = teamServices.updateTeam(teamId, teamReq);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedTeam);
+    }
 
     @GetMapping("/all")
     public ResponseEntity<List<TeamRes>> getAllTeams() {

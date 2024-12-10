@@ -1,11 +1,8 @@
 package Task_Management_service.controller;
 
 import Task_Management_service.dto.request.ActivityLogsReq;
-import Task_Management_service.dto.request.CommentReq;
 import Task_Management_service.dto.response.ActivityLogsRes;
-import Task_Management_service.dto.response.CommentRes;
-import Task_Management_service.service.ActivityLogService;
-//import Task_Management_service.service.CommentService;
+import Task_Management_service.services.ActivityLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

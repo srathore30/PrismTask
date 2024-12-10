@@ -1,4 +1,4 @@
-package Task_Management_service.service;
+package Task_Management_service.services;
 
 import Task_Management_service.dto.request.JwtRequest;
 import Task_Management_service.dto.request.UserReqDto;
@@ -11,6 +11,8 @@ import java.util.List;
 public interface UserServices extends UserDetailsService {
     UserResDto createUser(UserReqDto userReqDto);
     JwtResponse loginUser(JwtRequest jwtRequest);
+    UserResDto updateUser(Long id, UserReqDto userReqDto);
+
     UserResDto getUserById(Long id);
     List<UserResDto> getAllUsers();
     void deleteUserById(Long id);

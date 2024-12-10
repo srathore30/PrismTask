@@ -12,7 +12,7 @@ import Task_Management_service.entity.UserEntity;
 import Task_Management_service.exception.NoSuchElementFoundException;
 import Task_Management_service.exception.ValidationException;
 import Task_Management_service.repository.UserRepo;
-import Task_Management_service.service.UserServices;
+import Task_Management_service.services.UserServices;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -50,6 +50,27 @@ public class UserServicesImpl implements UserServices {
         UserEntity savedUser = userRepo.save(user);
         return mapToDto(savedUser);
     }
+
+    @Override
+    public UserResDto updateUser(Long id, UserReqDto userReqDto) {
+        UserEntity userEntity = userRepo.findUserById(id)
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.USER_NOT_FOUND.getErrorCode(),ApiErrorCodes.USER_NOT_FOUND.getErrorMessage()));
+        Optional<UserEntity> existingUser = userRepo.findByEmail(userReqDto.getEmail());
+        if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
+            throw new ValidationException(ApiErrorCodes.USER_ALREADY_EXIST.getErrorCode(),ApiErrorCodes.USER_ALREADY_EXIST.getErrorMessage());
+        }
+        userEntity.setUsername(userReqDto.getUsername());
+        userEntity.setEmail(userReqDto.getEmail());
+        userEntity.setMobileNo(userReqDto.getMobileNo());
+        userEntity.setRole(userReqDto.getRole());
+
+        if (userReqDto.getPassword() != null && !userReqDto.getPassword().isBlank()) {
+            userEntity.setPassword(authConfig.passwordEncoder().encode(userReqDto.getPassword()));
+        }
+        UserEntity updatedUser = userRepo.save(userEntity);
+        return mapToDto(updatedUser);
+    }
+
 
     @Override
     public void deleteUserById(Long id) {

@@ -8,9 +8,9 @@ import Task_Management_service.entity.TaskEntity;
 import Task_Management_service.entity.UserEntity;
 import Task_Management_service.exception.NoSuchElementFoundException;
 import Task_Management_service.repository.CommentRepo;
-import Task_Management_service.repository.TaskRepo;
+import Task_Management_service.repository.TaskRepository;
 import Task_Management_service.repository.UserRepo;
-import Task_Management_service.service.CommentService;
+import Task_Management_service.services.CommentService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 @Service
 public class CommentImpl implements CommentService {
     private final CommentRepo commentRepo;
-    private final TaskRepo taskRepo;
+    private final TaskRepository taskRepo;
     private final UserRepo userRepo;
 
-    public CommentImpl(CommentRepo commentRepo, TaskRepo taskRepo, UserRepo userRepo) {
+    public CommentImpl(CommentRepo commentRepo, TaskRepository taskRepo, UserRepo userRepo) {
         this.commentRepo = commentRepo;
         this.taskRepo = taskRepo;
         this.userRepo = userRepo;
@@ -34,10 +34,7 @@ public class CommentImpl implements CommentService {
         TaskEntity task = taskRepo.findById(commentReq.getTaskId())
                 .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.TASK_NOT_FOUND.getErrorCode(),ApiErrorCodes.TASK_NOT_FOUND.getErrorMessage()));
         UserEntity user = userRepo.findById(commentReq.getUserId())
-                .orElseThrow(() -> new NoSuchElementFoundException(
-                        ApiErrorCodes.USER_NOT_FOUND.getErrorCode(),
-                        ApiErrorCodes.USER_NOT_FOUND.getErrorMessage()
-                ));
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.USER_NOT_FOUND.getErrorCode(),ApiErrorCodes.USER_NOT_FOUND.getErrorMessage()));
         CommentEntity commentEntity = mapToEntity(commentReq, task, user);
         CommentEntity savedComment = commentRepo.save(commentEntity);
         return mapToDto(savedComment);
@@ -65,10 +62,7 @@ public class CommentImpl implements CommentService {
     @Override
     public void deleteCommentById(Long id) {
         CommentEntity commentEntity = commentRepo.findById(id)
-                .orElseThrow(() -> new NoSuchElementFoundException(
-                        ApiErrorCodes.COMMENT_NOT_FOUND.getErrorCode(),
-                        ApiErrorCodes.COMMENT_NOT_FOUND.getErrorMessage()
-                ));
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.COMMENT_NOT_FOUND.getErrorCode(),ApiErrorCodes.COMMENT_NOT_FOUND.getErrorMessage()));
         commentRepo.delete(commentEntity);
     }
 

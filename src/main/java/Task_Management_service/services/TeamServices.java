@@ -1,4 +1,4 @@
-package Task_Management_service.service;
+package Task_Management_service.services;
 
 import Task_Management_service.dto.request.JwtRequest;
 import Task_Management_service.dto.request.TeamReq;
@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface TeamServices {
     TeamRes createTeam(TeamReq teamReq);
+    TeamRes updateTeam(Long id,TeamReq teamReq);
     TeamRes getTeamById(Long id);
     List<TeamRes> getAllTeams();
     void deleteTeamById(Long id);

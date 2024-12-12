@@ -16,6 +16,7 @@ import java.util.Date;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Table(name = "task_entity")
 public class TaskEntity extends BaseEntity {
     @Column(name = "title", nullable = false)
     String title;

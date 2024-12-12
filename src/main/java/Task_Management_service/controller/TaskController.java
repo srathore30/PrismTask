@@ -3,7 +3,7 @@ package Task_Management_service.controller;
 import Task_Management_service.dto.request.TaskRequest;
 import Task_Management_service.dto.response.PaginatedResp;
 import Task_Management_service.dto.response.TaskResponse;
-import Task_Management_service.services.TaskService;
+import Task_Management_service.implementation.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

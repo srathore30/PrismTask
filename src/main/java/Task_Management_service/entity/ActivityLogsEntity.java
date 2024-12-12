@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+@Table(name = "activity_logs")
 public class ActivityLogsEntity extends BaseEntity {
 
     @ManyToOne

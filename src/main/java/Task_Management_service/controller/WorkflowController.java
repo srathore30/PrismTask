@@ -3,7 +3,7 @@ package Task_Management_service.controller;
 import Task_Management_service.dto.request.WorkflowRequest;
 import Task_Management_service.dto.response.PaginatedResp;
 import Task_Management_service.dto.response.WorkflowResponse;
-import Task_Management_service.services.WorkflowService;
+import Task_Management_service.implementation.WorkflowService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

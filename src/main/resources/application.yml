@@ -1,15 +1,5 @@
 spring:
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: rathore.as09@gmail.com
-    password: rsgg dltj zype rqbr
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+
   profiles:
     active: dev
   datasource:
@@ -30,7 +20,7 @@ spring:
 server:
   port: 8098
   servlet:
-    context-path: /Task-management-service
+    context-path: /task-management
 application:
   config:
     trace: true

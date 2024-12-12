@@ -3,6 +3,7 @@ package Task_Management_service.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+@Table(name = "comment_entity")
 public class CommentEntity extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)

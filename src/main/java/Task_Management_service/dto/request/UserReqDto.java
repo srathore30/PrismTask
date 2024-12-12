@@ -1,5 +1,7 @@
 package Task_Management_service.dto.request;
 
+import Task_Management_service.constant.UserRole;
+import Task_Management_service.constant.UserStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,4 +15,5 @@ public class UserReqDto {
     String password;
     String email;
     String mobileNo;
+    UserRole role;
 }

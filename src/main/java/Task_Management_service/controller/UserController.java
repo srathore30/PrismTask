@@ -4,11 +4,14 @@ import Task_Management_service.dto.request.JwtRequest;
 import Task_Management_service.dto.request.UserReqDto;
 import Task_Management_service.dto.response.JwtResponse;
 import Task_Management_service.dto.response.UserResDto;
-import Task_Management_service.service.UserServices;
+import Task_Management_service.services.UserServices;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,9 +32,29 @@ public class UserController {
         return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResDto> updateUser(@PathVariable Long id,@RequestBody UserReqDto userReqDto) {
+        UserResDto updatedUser = userServices.updateUser(id, userReqDto);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+
     @GetMapping("/{id}")
     public ResponseEntity<UserResDto> getUserById(@PathVariable Long id) {
         UserResDto userResDto = userServices.getUserById(id);
         return new ResponseEntity<>(userResDto, HttpStatus.OK);
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<UserResDto>> getAllUsers() {
+        List<UserResDto> userResDtoList = userServices.getAllUsers();
+        return new ResponseEntity<>(userResDtoList, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
+        userServices.deleteUserById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

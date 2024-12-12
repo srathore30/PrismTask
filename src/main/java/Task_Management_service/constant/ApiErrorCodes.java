@@ -10,7 +10,19 @@ public enum ApiErrorCodes implements Error{
     USER_ALREADY_EXIST(40003, "User already exist"),
     INVALID_INPUT(40004, "Invalid request input"),
     INVALID_USERNAME_OR_PASSWORD(40005,"invalid username or password"),
-    USER_NOT_FOUND(40006, "User not found");
+    USER_NOT_FOUND(40006, "User not found"),
+    TEAM_MEMBER_NOT_FOUND(40007,"Team Member not found"),
+    TEAM_ALREADY_EXIST(40008, "Team already exist"),
+    TEAM_NOT_FOUND(40009,"Team not found"),
+    COMMENT_NOT_FOUND(40009,"Comment not found"),
+    ACTIVITY_LOGS_NOT_FOUND(40010,"ActivityLogs not found"),
+    TASK_NOT_FOUND(40011,"Task not found"),
+    OWNER_NOT_FOUND(40012,"Owner not found"),
+    PROJECT_NOT_FOUND(40013,"Project not found"),
+    STEP_NOT_FOUND(40014,"Step not found"),
+    ASSIGNEE_NOT_FOUND(40014,"Assignee not found"),
+    REPORTER_NOT_FOUND(40015,"Reporter not found"),
+    WORKFLOW_NOT_FOUND(40016,"Workflow not found with this id");
 
     private int errorCode;
     private String errorMessage;

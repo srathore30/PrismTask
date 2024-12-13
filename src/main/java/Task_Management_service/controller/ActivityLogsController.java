@@ -1,4 +1,4 @@
-package Task_Management_service.Controller;
+package Task_Management_service.controller;
 
 import Task_Management_service.dto.request.ActivityLogsReq;
 import Task_Management_service.dto.response.ActivityLogsRes;

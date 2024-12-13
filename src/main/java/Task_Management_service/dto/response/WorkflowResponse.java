@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -14,5 +15,5 @@ public class WorkflowResponse {
     Long workflowId;
     String name;
     Long projectId;
-    LocalDateTime createdAt;
+    Date createdTime;
 }

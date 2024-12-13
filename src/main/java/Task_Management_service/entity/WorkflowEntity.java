@@ -20,8 +20,4 @@ public class WorkflowEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     ProjectEntity project;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @CreationTimestamp
-    LocalDateTime createdAt;
 }

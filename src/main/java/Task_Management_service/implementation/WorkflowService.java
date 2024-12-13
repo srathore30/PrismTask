@@ -38,8 +38,6 @@ public class WorkflowService {
         WorkflowEntity workflowEntity = new WorkflowEntity();
         workflowEntity.setName(request.getName());
         workflowEntity.setProject(projectEntity);
-        workflowEntity.setCreatedAt(LocalDateTime.now());
-
         WorkflowEntity savedEntity = workflowRepository.save(workflowEntity);
         return mapEntityToDto(savedEntity);
     }
@@ -94,7 +92,7 @@ public class WorkflowService {
         response.setWorkflowId(workflowEntity.getId());
         response.setName(workflowEntity.getName());
         response.setProjectId(workflowEntity.getProject().getId());
-        response.setCreatedAt(workflowEntity.getCreatedAt());
+        response.setCreatedTime(workflowEntity.getCreatedTime());
         return response;
     }
 }

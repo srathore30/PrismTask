@@ -1,4 +1,4 @@
-package Task_Management_service.Controller;
+package Task_Management_service.controller;
 
 import Task_Management_service.dto.request.JwtRequest;
 import Task_Management_service.dto.request.UserReqDto;
@@ -7,6 +7,7 @@ import Task_Management_service.dto.response.PaginatedResp;
 import Task_Management_service.dto.response.TeamMembersRes;
 import Task_Management_service.dto.response.UserResDto;
 import Task_Management_service.services.UserServices;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class UserController {
     private final UserServices userServices;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResDto> registerUser(@RequestBody UserReqDto userReqDto) {
+    public ResponseEntity<UserResDto> registerUser(@RequestBody @Valid UserReqDto userReqDto) {
         UserResDto userResDto = userServices.createUser(userReqDto);
         return new ResponseEntity<>(userResDto, HttpStatus.CREATED);
     }

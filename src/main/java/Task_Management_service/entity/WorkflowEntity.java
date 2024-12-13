@@ -3,6 +3,9 @@ package Task_Management_service.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -18,4 +21,7 @@ public class WorkflowEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     ProjectEntity project;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
+    LocalDateTime createdAt;
 }

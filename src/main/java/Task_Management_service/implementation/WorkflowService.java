@@ -15,9 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Service
 public class WorkflowService {
 
@@ -31,11 +31,14 @@ public class WorkflowService {
 
     public WorkflowResponse createWorkflow(WorkflowRequest request) {
         ProjectEntity projectEntity = projectRepository.findById(request.getProjectId())
-                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.PROJECT_NOT_FOUND.getErrorCode(), ApiErrorCodes.PROJECT_NOT_FOUND.getErrorMessage()));
+                .orElseThrow(() -> new NoSuchElementFoundException(
+                        ApiErrorCodes.PROJECT_NOT_FOUND.getErrorCode(),
+                        ApiErrorCodes.PROJECT_NOT_FOUND.getErrorMessage()));
 
         WorkflowEntity workflowEntity = new WorkflowEntity();
         workflowEntity.setName(request.getName());
         workflowEntity.setProject(projectEntity);
+        workflowEntity.setCreatedAt(LocalDateTime.now());
 
         WorkflowEntity savedEntity = workflowRepository.save(workflowEntity);
         return mapEntityToDto(savedEntity);
@@ -91,6 +94,7 @@ public class WorkflowService {
         response.setWorkflowId(workflowEntity.getId());
         response.setName(workflowEntity.getName());
         response.setProjectId(workflowEntity.getProject().getId());
+        response.setCreatedAt(workflowEntity.getCreatedAt());
         return response;
     }
 }

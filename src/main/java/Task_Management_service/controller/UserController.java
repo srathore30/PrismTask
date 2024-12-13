@@ -1,4 +1,4 @@
-package Task_Management_service.controller;
+package Task_Management_service.Controller;
 
 import Task_Management_service.dto.request.JwtRequest;
 import Task_Management_service.dto.request.UserReqDto;

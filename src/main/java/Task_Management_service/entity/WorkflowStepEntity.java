@@ -1,5 +1,6 @@
 package Task_Management_service.entity;
 
+import Task_Management_service.constant.WorkflowStepType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,6 +16,9 @@ public class WorkflowStepEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     WorkflowEntity workflow;
-    String name;
+
+    @Column(nullable = false)
+    WorkflowStepType type;
+
     int position;
 }

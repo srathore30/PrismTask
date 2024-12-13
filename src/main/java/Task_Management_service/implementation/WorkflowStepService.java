@@ -11,8 +11,8 @@ import Task_Management_service.repository.WorkflowStepRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
 @Service
 public class WorkflowStepService {
 
@@ -29,7 +29,7 @@ public class WorkflowStepService {
                 .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.WORKFLOW_NOT_FOUND.getErrorCode(), ApiErrorCodes.WORKFLOW_NOT_FOUND.getErrorMessage()));
 
         WorkflowStepEntity step = new WorkflowStepEntity();
-        step.setName(request.getName());
+        step.setType(request.getType());
         step.setPosition(request.getPosition());
         step.setWorkflow(workflow);
 
@@ -47,12 +47,12 @@ public class WorkflowStepService {
 
     public WorkflowStepResponse updateStep(Long stepId, WorkflowStepRequest request) {
         WorkflowStepEntity step = stepRepository.findById(stepId)
-                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.STEP_NOT_FOUND.getErrorCode(),ApiErrorCodes.STEP_NOT_FOUND.getErrorMessage()));
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.STEP_NOT_FOUND.getErrorCode(), ApiErrorCodes.STEP_NOT_FOUND.getErrorMessage()));
 
         WorkflowEntity workflow = workflowRepository.findById(request.getWorkflowId())
                 .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.WORKFLOW_NOT_FOUND.getErrorCode(), ApiErrorCodes.WORKFLOW_NOT_FOUND.getErrorMessage()));
 
-        step.setName(request.getName());
+        step.setType(request.getType());
         step.setPosition(request.getPosition());
         step.setWorkflow(workflow);
 
@@ -62,14 +62,14 @@ public class WorkflowStepService {
 
     public void deleteStep(Long stepId) {
         WorkflowStepEntity step = stepRepository.findById(stepId)
-                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.STEP_NOT_FOUND.getErrorCode(),ApiErrorCodes.STEP_NOT_FOUND.getErrorMessage()));
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.STEP_NOT_FOUND.getErrorCode(), ApiErrorCodes.STEP_NOT_FOUND.getErrorMessage()));
         stepRepository.delete(step);
     }
 
     private WorkflowStepResponse mapEntityToDto(WorkflowStepEntity step) {
         WorkflowStepResponse response = new WorkflowStepResponse();
         response.setStepId(step.getId());
-        response.setName(step.getName());
+        response.setType(step.getType());
         response.setPosition(step.getPosition());
         response.setWorkflowId(step.getWorkflow().getId());
         return response;

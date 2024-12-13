@@ -1,4 +1,4 @@
-package Task_Management_service.controller;
+package Task_Management_service.Controller;
 
 import Task_Management_service.dto.request.TeamReq;
 import Task_Management_service.dto.response.TeamRes;

@@ -1,5 +1,6 @@
 package Task_Management_service.dto.response;
 
+import Task_Management_service.constant.WorkflowStepType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,6 @@ import lombok.experimental.FieldDefaults;
 public class WorkflowStepResponse {
     Long stepId;
     Long workflowId;
-    String name;
+    WorkflowStepType type;
     int position;
 }

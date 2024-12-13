@@ -3,14 +3,21 @@ package Task_Management_service.implementation;
 import Task_Management_service.constant.ApiErrorCodes;
 import Task_Management_service.dto.request.CommentReq;
 import Task_Management_service.dto.response.CommentRes;
+import Task_Management_service.dto.response.PaginatedResp;
+import Task_Management_service.dto.response.TeamMembersRes;
 import Task_Management_service.entity.CommentEntity;
 import Task_Management_service.entity.TaskEntity;
+import Task_Management_service.entity.TeamMembers;
 import Task_Management_service.entity.UserEntity;
 import Task_Management_service.exception.NoSuchElementFoundException;
 import Task_Management_service.repository.CommentRepo;
 import Task_Management_service.repository.TaskRepository;
 import Task_Management_service.repository.UserRepo;
 import Task_Management_service.services.CommentService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,11 +59,24 @@ public class CommentImpl implements CommentService {
     }
 
     @Override
-    public List<CommentRes> getAllComments() {
-        List<CommentEntity> commentEntityList = commentRepo.findAll();
-        return commentEntityList.stream()
+    public PaginatedResp<CommentRes> getAllComments(int page, int size, String sortBy, String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<CommentEntity> commentPage = commentRepo.findAll(pageable);
+
+        List<CommentRes> responseList = commentPage.getContent()
+                .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
+
+        return new PaginatedResp<>(
+                commentPage.getTotalElements(),
+                commentPage.getTotalPages(),
+                page,
+                responseList
+        );
     }
 
     @Override

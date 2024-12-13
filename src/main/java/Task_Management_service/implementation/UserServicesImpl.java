@@ -7,12 +7,19 @@ import Task_Management_service.constant.UserStatus;
 import Task_Management_service.dto.request.JwtRequest;
 import Task_Management_service.dto.request.UserReqDto;
 import Task_Management_service.dto.response.JwtResponse;
+import Task_Management_service.dto.response.PaginatedResp;
+import Task_Management_service.dto.response.TeamMembersRes;
 import Task_Management_service.dto.response.UserResDto;
+import Task_Management_service.entity.TeamMembers;
 import Task_Management_service.entity.UserEntity;
 import Task_Management_service.exception.NoSuchElementFoundException;
 import Task_Management_service.exception.ValidationException;
 import Task_Management_service.repository.UserRepo;
 import Task_Management_service.services.UserServices;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -42,8 +49,12 @@ public class UserServicesImpl implements UserServices {
         Optional<UserEntity> optionalUserEntity = userRepo.findByEmail(userReqDto.getEmail());
         if (optionalUserEntity.isPresent()) {
             throw new ValidationException(
-                    ApiErrorCodes.USER_ALREADY_EXIST.getErrorCode(),ApiErrorCodes.USER_ALREADY_EXIST.getErrorMessage()
-            );
+                    ApiErrorCodes.USER_ALREADY_EXIST.getErrorCode(),ApiErrorCodes.USER_ALREADY_EXIST.getErrorMessage());
+        }
+        Optional<UserEntity> optionalUserByMobile = userRepo.findByMobileNo(userReqDto.getMobileNo());
+        if (optionalUserByMobile.isPresent()) {
+            throw new ValidationException(
+                    ApiErrorCodes.MOBILE_ALREADY_EXIST.getErrorCode(),ApiErrorCodes.MOBILE_ALREADY_EXIST.getErrorMessage());
         }
         UserEntity user = mapToEntity(userReqDto);
         user.setStatus(UserStatus.ACTIVE);
@@ -59,7 +70,6 @@ public class UserServicesImpl implements UserServices {
         if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
             throw new ValidationException(ApiErrorCodes.USER_ALREADY_EXIST.getErrorCode(),ApiErrorCodes.USER_ALREADY_EXIST.getErrorMessage());
         }
-        userEntity.setUsername(userReqDto.getUsername());
         userEntity.setEmail(userReqDto.getEmail());
         userEntity.setMobileNo(userReqDto.getMobileNo());
         userEntity.setRole(userReqDto.getRole());
@@ -83,14 +93,14 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     public JwtResponse loginUser(JwtRequest jwtRequest) {
-        UserDetails userDetails = loadUserByUsername(jwtRequest.getUsername());
+        UserDetails userDetails = loadUserByUsername(jwtRequest.getMobileNo());
         if (AuthConfig.matches(jwtRequest.getPassword(), userDetails.getPassword())) {
             String token = jwtHelper.generateToken(userDetails);
             return new JwtResponse(token);
         }
 
         throw new ValidationException(
-                ApiErrorCodes.INVALID_USERNAME_OR_PASSWORD.getErrorCode(),  ApiErrorCodes.INVALID_USERNAME_OR_PASSWORD.getErrorMessage()
+                ApiErrorCodes.INVALID_MOBILE_OR_PASSWORD.getErrorCode(),  ApiErrorCodes.INVALID_MOBILE_OR_PASSWORD.getErrorMessage()
         );
     }
 
@@ -107,29 +117,40 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> optionalUserEntity = userRepo.findByUsername(username);
+    public UserDetails loadUserByUsername(String mobileNo) throws UsernameNotFoundException {
+        Optional<UserEntity> optionalUserEntity = userRepo.findByMobileNo(mobileNo);
         if (optionalUserEntity.isPresent()) {
             UserEntity user = optionalUserEntity.get();
             return new org.springframework.security.core.userdetails.User(
-                    user.getUsername(),
+                    user.getMobileNo(),
                     user.getPassword(),
                     Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")) // Default authority
             );
         }
 
-        throw new ValidationException(
-                ApiErrorCodes.INVALID_USERNAME_OR_PASSWORD.getErrorCode(),
-                ApiErrorCodes.INVALID_USERNAME_OR_PASSWORD.getErrorMessage()
-        );
+        throw new ValidationException(ApiErrorCodes.INVALID_MOBILE_OR_PASSWORD.getErrorCode(),ApiErrorCodes.INVALID_MOBILE_OR_PASSWORD.getErrorMessage());
     }
 
+
     @Override
-    public List<UserResDto> getAllUsers() {
-        List<UserEntity> userEntityList = userRepo.findAll();
-        return userEntityList.stream()
+    public PaginatedResp<UserResDto> getAllUsers(int page, int size, String sortBy, String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<UserEntity> userPage = userRepo.findAll(pageable);
+
+        List<UserResDto> responseList = userPage.getContent()
+                .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
+
+        return new PaginatedResp<>(
+                userPage.getTotalElements(),
+                userPage.getTotalPages(),
+                page,
+                responseList
+        );
     }
 
 

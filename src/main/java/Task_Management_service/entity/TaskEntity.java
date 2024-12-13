@@ -42,11 +42,11 @@ public class TaskEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "assignee_id")
-    UserEntity assignee;
+    UserEntity assignee;  // assignee take by user-entity
 
     @ManyToOne
     @JoinColumn(name = "reporter_id", nullable = false)
-    UserEntity reporter;
+    UserEntity reporter;  // reporter take by user_entity
 
     @Column(name = "due_date")
     Date dueDate;;

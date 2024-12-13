@@ -59,15 +59,16 @@ public class JwtHelper {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         System.out.println(userDetails.getUsername());
-        Optional<UserEntity> optionalUserEntity = userRepo.findByUsername(userDetails.getUsername());
+        Optional<UserEntity> optionalUserEntity = userRepo.findByMobileNo(userDetails.getUsername());
         if(optionalUserEntity.isEmpty()){
             throw new NoSuchElementFoundException(ApiErrorCodes.USER_NOT_FOUND.getErrorCode(), ApiErrorCodes.USER_NOT_FOUND.getErrorMessage());
         }
         UserEntity user = optionalUserEntity.get();
         claims.put("email",user.getEmail());
+        claims.put("mobileNo",user.getMobileNo());
         claims.put("username",user.getUsername());
         claims.put("id", user.getId());
-        return doGenerateToken(claims, userDetails.getUsername());
+        return doGenerateToken(claims, user.getMobileNo());
     }
     private String doGenerateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))

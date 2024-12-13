@@ -3,6 +3,8 @@ package Task_Management_service.controller;
 import Task_Management_service.dto.request.JwtRequest;
 import Task_Management_service.dto.request.UserReqDto;
 import Task_Management_service.dto.response.JwtResponse;
+import Task_Management_service.dto.response.PaginatedResp;
+import Task_Management_service.dto.response.TeamMembersRes;
 import Task_Management_service.dto.response.UserResDto;
 import Task_Management_service.services.UserServices;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +48,12 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserResDto>> getAllUsers() {
-        List<UserResDto> userResDtoList = userServices.getAllUsers();
-        return new ResponseEntity<>(userResDtoList, HttpStatus.OK);
+    public ResponseEntity<PaginatedResp<UserResDto>> getAllTeamMembers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdTime") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection) {
+        return ResponseEntity.ok(userServices.getAllUsers(page, size, sortBy, sortDirection));
     }
 
     @DeleteMapping("/{id}")

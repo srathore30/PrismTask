@@ -16,6 +16,10 @@ import Task_Management_service.repository.TeamMembersRepo;
 import Task_Management_service.repository.TeamRepo;
 import Task_Management_service.repository.UserRepo;
 import Task_Management_service.services.TeamServices;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -71,11 +75,24 @@ public class TeamImpl implements TeamServices {
 
 
     @Override
-    public List<TeamRes> getAllTeams() {
-        List<TeamEntity> teamEntityList = teamRepo.findAll();
-        return teamEntityList.stream()
+    public PaginatedResp<TeamRes> getAllTeams(int page, int size, String sortBy, String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<TeamEntity> teamPage = teamRepo.findAll(pageable);
+
+        List<TeamRes> responseList = teamPage.getContent()
+                .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
+
+        return new PaginatedResp<>(
+                teamPage.getTotalElements(),
+                teamPage.getTotalPages(),
+                page,
+                responseList
+        );
     }
 
     @Override

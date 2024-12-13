@@ -4,6 +4,7 @@ import Task_Management_service.dto.request.JwtRequest;
 import Task_Management_service.dto.request.TeamReq;
 import Task_Management_service.dto.request.UserReqDto;
 import Task_Management_service.dto.response.JwtResponse;
+import Task_Management_service.dto.response.PaginatedResp;
 import Task_Management_service.dto.response.TeamRes;
 import Task_Management_service.dto.response.UserResDto;
 
@@ -13,6 +14,6 @@ public interface TeamServices {
     TeamRes createTeam(TeamReq teamReq);
     TeamRes updateTeam(Long id,TeamReq teamReq);
     TeamRes getTeamById(Long id);
-    List<TeamRes> getAllTeams();
+    PaginatedResp<TeamRes> getAllTeams(int page, int size, String sortBy, String sortDirection);
     void deleteTeamById(Long id);
 }

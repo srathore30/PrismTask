@@ -3,6 +3,7 @@ package Task_Management_service.controller;
 import Task_Management_service.dto.request.CommentReq;
 import Task_Management_service.dto.request.TeamReq;
 import Task_Management_service.dto.response.CommentRes;
+import Task_Management_service.dto.response.PaginatedResp;
 import Task_Management_service.dto.response.TeamRes;
 import Task_Management_service.services.CommentService;
 import Task_Management_service.services.TeamServices;
@@ -35,10 +36,14 @@ public class CommentController {
         return  ResponseEntity.status(HttpStatus.OK).body(resp);
     }
 
+
     @GetMapping("/all")
-    public ResponseEntity<List<CommentRes>> getAllComments() {
-        List<CommentRes> commentResList = commentService.getAllComments();
-        return new ResponseEntity<>(commentResList, HttpStatus.OK);
+    public ResponseEntity<PaginatedResp<CommentRes>> getAllComments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdTime") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection) {
+        return ResponseEntity.ok(commentService.getAllComments(page, size, sortBy, sortDirection));
     }
 
     @DeleteMapping("/{id}")

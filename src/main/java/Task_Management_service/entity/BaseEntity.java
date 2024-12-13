@@ -31,6 +31,6 @@ public abstract class BaseEntity implements Serializable {
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "modified_date", nullable = false, updatable = true)
-    Date modifiedDate;
+    @Column(name = "modified_time", nullable = false, updatable = true)
+    Date modifiedTime;
 }

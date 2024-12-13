@@ -16,6 +16,6 @@ public class ActivityLogsRes {
     Long userId;
     String userName;
     String action;
-    EntityType activityType;
+    EntityType entityType;
     Long entityId;
 }

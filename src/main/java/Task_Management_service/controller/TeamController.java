@@ -1,7 +1,9 @@
 package Task_Management_service.Controller;
 
 import Task_Management_service.dto.request.TeamReq;
+import Task_Management_service.dto.response.PaginatedResp;
 import Task_Management_service.dto.response.TeamRes;
+import Task_Management_service.dto.response.WorkflowResponse;
 import Task_Management_service.services.TeamServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,10 +41,14 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedTeam);
     }
 
+
     @GetMapping("/all")
-    public ResponseEntity<List<TeamRes>> getAllTeams() {
-        List<TeamRes> teamResList = teamServices.getAllTeams();
-        return new ResponseEntity<>(teamResList, HttpStatus.OK);
+    public ResponseEntity<PaginatedResp<TeamRes>> getAllteams(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdTime") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection) {
+        return ResponseEntity.ok(teamServices.getAllTeams(page, size, sortBy, sortDirection));
     }
 
     @DeleteMapping("/{id}")

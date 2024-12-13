@@ -3,6 +3,7 @@ package Task_Management_service.implementation;
 import Task_Management_service.constant.ApiErrorCodes;
 import Task_Management_service.dto.request.TeamMembersReq;
 import Task_Management_service.dto.request.TeamReq;
+import Task_Management_service.dto.response.PaginatedResp;
 import Task_Management_service.dto.response.TeamMembersRes;
 import Task_Management_service.dto.response.TeamRes;
 import Task_Management_service.entity.TeamEntity;
@@ -14,6 +15,10 @@ import Task_Management_service.repository.TeamMembersRepo;
 import Task_Management_service.repository.TeamRepo;
 import Task_Management_service.repository.UserRepo;
 import Task_Management_service.services.TeamMembersServices;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -86,11 +91,24 @@ public class TeamMembersImpl implements TeamMembersServices {
     }
 
     @Override
-    public List<TeamMembersRes> getAllTeamMembers() {
-        List<TeamMembers> teamMembersList = teamMembersRepo.findAll();
-        return teamMembersList.stream()
+    public PaginatedResp<TeamMembersRes> getAllTeamMembers(int page, int size, String sortBy, String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<TeamMembers> teamMembersPage = teamMembersRepo.findAll(pageable);
+
+        List<TeamMembersRes> responseList = teamMembersPage.getContent()
+                .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
+
+        return new PaginatedResp<>(
+                teamMembersPage.getTotalElements(),
+                teamMembersPage.getTotalPages(),
+                page,
+                responseList
+        );
     }
 
     private TeamMembersRes mapToDto(TeamMembers teamMember) {

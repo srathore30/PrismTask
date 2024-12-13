@@ -19,6 +19,6 @@ public class ActivityLogsEntity extends BaseEntity {
     UserEntity user;
     String action;
     @Enumerated(EnumType.STRING)
-    EntityType activityType;
+    EntityType entityType;
     Long entityId;
 }

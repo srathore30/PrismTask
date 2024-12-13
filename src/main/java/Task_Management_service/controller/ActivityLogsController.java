@@ -2,6 +2,8 @@ package Task_Management_service.Controller;
 
 import Task_Management_service.dto.request.ActivityLogsReq;
 import Task_Management_service.dto.response.ActivityLogsRes;
+import Task_Management_service.dto.response.CommentRes;
+import Task_Management_service.dto.response.PaginatedResp;
 import Task_Management_service.services.ActivityLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,10 +34,14 @@ public class ActivityLogsController {
         return  ResponseEntity.status(HttpStatus.OK).body(resp);
     }
 
+
     @GetMapping("/all")
-    public ResponseEntity<List<ActivityLogsRes>> getAllActivityLogs() {
-        List<ActivityLogsRes> commentResList = activityLogService.getAllActivityLogs();
-        return new ResponseEntity<>(commentResList, HttpStatus.OK);
+    public ResponseEntity<PaginatedResp<ActivityLogsRes>> getAllComments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdTime") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection) {
+        return ResponseEntity.ok(activityLogService.getAllActivityLogs(page, size, sortBy, sortDirection));
     }
 
     @DeleteMapping("/{id}")

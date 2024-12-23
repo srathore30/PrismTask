@@ -41,6 +41,12 @@ public class UserController {
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
+    @GetMapping("/resetPassword")
+    public ResponseEntity<String> resetPassword(@RequestParam Long id, @RequestParam String newPassword){
+        String resp = userServices.resetPassword(id, newPassword);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResDto> getUserById(@PathVariable Long id) {

@@ -105,6 +105,18 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
+    public String resetPassword(Long id, String newPassword) {
+        Optional<UserEntity> optionalUserEntity = userRepo.findUserById(id);
+        if(optionalUserEntity.isEmpty()){
+            throw new NoSuchElementFoundException(ApiErrorCodes.USER_NOT_FOUND.getErrorCode(), ApiErrorCodes.USER_NOT_FOUND.getErrorMessage());
+        }
+        UserEntity userEntity = optionalUserEntity.get();
+        userEntity.setPassword(authConfig.passwordEncoder().encode(newPassword));
+        userRepo.save(userEntity);
+        return "password changed";
+    }
+
+    @Override
     public UserResDto getUserById(Long id) {
         Optional<UserEntity> optionalUserEntity = userRepo.findById(id);
         if (optionalUserEntity.isEmpty()) {

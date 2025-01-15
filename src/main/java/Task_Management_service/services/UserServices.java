@@ -14,6 +14,7 @@ public interface UserServices extends UserDetailsService {
     UserResDto createUser(UserReqDto userReqDto);
     JwtResponse loginUser(JwtRequest jwtRequest);
     UserResDto updateUser(Long id, UserReqDto userReqDto);
+    String resetPassword(Long id, String newPassword);
 
     UserResDto getUserById(Long id);
 

@@ -24,7 +24,8 @@ public enum ApiErrorCodes implements Error{
     REPORTER_NOT_FOUND(40015,"Reporter not found"),
     WORKFLOW_NOT_FOUND(40016,"Workflow not found with this id"),
     MOBILE_ALREADY_EXIST(40017,"Mobile no. already exist"),
-    INVALID_ENTITY_ID(40018,"Invalid Entity Id");
+    INVALID_ENTITY_ID(40018,"Invalid Entity Id"),
+    REPORT_NOT_FOUND(40019,"Report not found" );
 
     private int errorCode;
     private String errorMessage;

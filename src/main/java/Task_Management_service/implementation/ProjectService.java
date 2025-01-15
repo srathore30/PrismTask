@@ -43,9 +43,29 @@ public class ProjectService {
         return mapEntityToDto(projectRepository.save(entity));
     }
 
+    public List<ProjectResponse> createProjectsInBulk(List<ProjectRequest> projectRequests) {
+        List<ProjectEntity> entities = projectRequests.stream().map(request -> {
+            UserEntity owner = userRepository.findById(request.getOwnerId())
+                    .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.OWNER_NOT_FOUND.getErrorCode(), ApiErrorCodes.OWNER_NOT_FOUND.getErrorMessage()));
+
+            TeamEntity team = teamRepo.findById(request.getTeamId())
+                    .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.TEAM_NOT_FOUND.getErrorCode(), ApiErrorCodes.TEAM_NOT_FOUND.getErrorMessage()));
+
+            return mapDtoToEntity(request, owner, team);
+        }).collect(Collectors.toList());
+
+        List<ProjectEntity> savedEntities = projectRepository.saveAll(entities);
+        return savedEntities.stream().map(this::mapEntityToDto).collect(Collectors.toList());
+    }
+
+    public List<ProjectResponse> getAllProjectsAsList() {
+        List<ProjectEntity> entities = projectRepository.findAll();
+        return entities.stream().map(this::mapEntityToDto).collect(Collectors.toList());
+    }
+
     public ProjectResponse updateProject(Long id, ProjectRequest request) {
         ProjectEntity project = projectRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.PROJECT_NOT_FOUND.getErrorCode(),ApiErrorCodes.PROJECT_NOT_FOUND.getErrorMessage()));
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.PROJECT_NOT_FOUND.getErrorCode(), ApiErrorCodes.PROJECT_NOT_FOUND.getErrorMessage()));
 
         UserEntity owner = userRepository.findById(request.getOwnerId())
                 .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.OWNER_NOT_FOUND.getErrorCode(), ApiErrorCodes.OWNER_NOT_FOUND.getErrorMessage()));
@@ -63,13 +83,13 @@ public class ProjectService {
 
     public ProjectResponse getProjectById(Long id) {
         ProjectEntity project = projectRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.PROJECT_NOT_FOUND.getErrorCode(),ApiErrorCodes.PROJECT_NOT_FOUND.getErrorMessage()));
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.PROJECT_NOT_FOUND.getErrorCode(), ApiErrorCodes.PROJECT_NOT_FOUND.getErrorMessage()));
         return mapEntityToDto(project);
     }
 
     public void deleteProject(Long id) {
         ProjectEntity project = projectRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.PROJECT_NOT_FOUND.getErrorCode(),ApiErrorCodes.PROJECT_NOT_FOUND.getErrorMessage()));
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.PROJECT_NOT_FOUND.getErrorCode(), ApiErrorCodes.PROJECT_NOT_FOUND.getErrorMessage()));
         projectRepository.delete(project);
     }
 

@@ -5,11 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-@Getter
 @Setter
+@Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class WorkflowRequest {
-
-    String name;
-    Long projectId;
+public class ReportUpdateRequest {
+    Long id;
+    String title;
+    String description;
+    Long teamId;
 }

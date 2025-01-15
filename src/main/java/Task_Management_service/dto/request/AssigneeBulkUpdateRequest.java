@@ -5,11 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class WorkflowRequest {
+import java.util.List;
 
-    String name;
-    Long projectId;
+@Setter
+@Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class AssigneeBulkUpdateRequest {
+    List<AssigneeUpdateRequest> assignees;
+    List<Long> assigneeIds;
 }

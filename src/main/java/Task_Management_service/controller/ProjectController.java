@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/projects")
 public class ProjectController {
@@ -49,6 +51,18 @@ public class ProjectController {
             @RequestParam(defaultValue = "createdTime") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection) {
         PaginatedResp<ProjectResponse> response = projectService.getAllProjects(page, size, sortBy, sortDirection);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<List<ProjectResponse>> createProjectsInBulk(@RequestBody List<ProjectRequest> projectRequests) {
+        List<ProjectResponse> response = projectService.createProjectsInBulk(projectRequests);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<ProjectResponse>> getAllProjectsAsList() {
+        List<ProjectResponse> response = projectService.getAllProjectsAsList();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -115,6 +115,7 @@ public class ReportService {
                 .map(this::mapEntityToDto)
                 .collect(Collectors.toList());
     }
+
     private ReportEntity mapDtoToEntity(ReportRequest request, UserEntity user, TeamEntity team) {
         ReportEntity entity = new ReportEntity();
         entity.setTitle(request.getTitle());
@@ -130,6 +131,7 @@ public class ReportService {
         response.setTitle(entity.getTitle());
         response.setDescription(entity.getDescription());
         response.setUserId(entity.getUser().getId());
+        response.setUserName(entity.getUser().getUsername()); // Use username from UserEntity
         response.setTeamId(entity.getTeam().getId());
         return response;
     }

@@ -10,6 +10,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AssigneeResponse {
     Long id;
+    String title;
     String description;
-    Long teamId;
+    Long taskId;
+    String taskName;
+    Long userId;
+    String userName;
 }

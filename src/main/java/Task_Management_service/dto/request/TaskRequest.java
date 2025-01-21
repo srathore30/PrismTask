@@ -14,6 +14,7 @@ import java.util.Date;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TaskRequest {
+    String name;
     String title;
     String description;
     TaskStatus status;

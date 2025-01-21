@@ -2,7 +2,6 @@ package Task_Management_service.controller;
 
 import Task_Management_service.dto.request.AssigneeRequest;
 import Task_Management_service.dto.request.AssigneeUpdateRequest;
-import Task_Management_service.dto.request.AssigneeBulkRequest;
 import Task_Management_service.dto.request.AssigneeBulkUpdateRequest;
 import Task_Management_service.dto.response.PaginatedResp;
 import Task_Management_service.dto.response.AssigneeResponse;
@@ -58,8 +57,8 @@ public class AssigneeController {
     }
 
     @PostMapping("/bulk")
-    public ResponseEntity<List<AssigneeResponse>> createAssigneesInBulk(@RequestBody AssigneeBulkRequest assigneeBulkRequest) {
-        List<AssigneeResponse> response = assigneeService.createAssigneesInBulk(assigneeBulkRequest.getAssignees());
+    public ResponseEntity<List<AssigneeResponse>> createAssigneesInBulk(@RequestBody List<AssigneeRequest> assigneeRequests) {
+        List<AssigneeResponse> response = assigneeService.createAssigneesInBulk(assigneeRequests);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

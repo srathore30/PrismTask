@@ -112,7 +112,6 @@ public class ProjectService {
         entity.setTeam(team);
         return entity;
     }
-
     private ProjectResponse mapEntityToDto(ProjectEntity entity) {
         ProjectResponse response = new ProjectResponse();
         response.setProjectId(entity.getId());
@@ -125,4 +124,5 @@ public class ProjectService {
         response.setCreatedAt(entity.getCreatedTime());
         return response;
     }
+
 }

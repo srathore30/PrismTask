@@ -1,22 +1,25 @@
 package Task_Management_service.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Entity
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "tb_assignees")
+@Table(name = "assignee_entity")
 public class AssigneeEntity extends BaseEntity {
-
-    @Column(name = "description", columnDefinition = "TEXT")
+    String title;
     String description;
 
-    @ManyToOne
-    @JoinColumn(name = "team_id", nullable = false)
-    TeamEntity team;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    UserEntity user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", nullable = false)
+    TaskEntity task;
 }

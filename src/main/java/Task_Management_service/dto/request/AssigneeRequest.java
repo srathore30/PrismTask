@@ -9,6 +9,8 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AssigneeRequest {
+    String title;
     String description;
-    Long teamId;
+    Long userId;
+    Long taskId;
 }

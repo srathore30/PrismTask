@@ -6,10 +6,12 @@ import Task_Management_service.dto.request.AssigneeUpdateRequest;
 import Task_Management_service.dto.response.PaginatedResp;
 import Task_Management_service.dto.response.AssigneeResponse;
 import Task_Management_service.entity.AssigneeEntity;
-import Task_Management_service.entity.TeamEntity;
+import Task_Management_service.entity.TaskEntity;
+import Task_Management_service.entity.UserEntity;
 import Task_Management_service.exception.NoSuchElementFoundException;
 import Task_Management_service.repository.AssigneeRepository;
-import Task_Management_service.repository.TeamRepo;
+import Task_Management_service.repository.TaskRepository;
+import Task_Management_service.repository.UserRepo;
 import Task_Management_service.constant.ApiErrorCodes;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -22,21 +24,23 @@ import java.util.stream.Collectors;
 public class AssigneeService {
 
     private final AssigneeRepository assigneeRepository;
-    private final TeamRepo teamRepo;
+    private final UserRepo userRepository;
+    private final TaskRepository taskRepo;
 
-    public AssigneeService(AssigneeRepository assigneeRepository, TeamRepo teamRepo) {
+    public AssigneeService(AssigneeRepository assigneeRepository, UserRepo userRepository, TaskRepository taskRepo) {
         this.assigneeRepository = assigneeRepository;
-        this.teamRepo = teamRepo;
+        this.userRepository = userRepository;
+        this.taskRepo = taskRepo;
     }
 
     public AssigneeResponse createAssignee(AssigneeRequest request) {
-        TeamEntity team = teamRepo.findById(request.getTeamId())
-                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.TEAM_NOT_FOUND.getErrorCode(), ApiErrorCodes.TEAM_NOT_FOUND.getErrorMessage()));
+        UserEntity user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.USER_NOT_FOUND.getErrorCode(), ApiErrorCodes.USER_NOT_FOUND.getErrorMessage()));
 
-        AssigneeEntity entity = new AssigneeEntity();
-        entity.setDescription(request.getDescription());
-        entity.setTeam(team);
+        TaskEntity task = taskRepo.findById(request.getTaskId())
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.TASK_NOT_FOUND.getErrorCode(), ApiErrorCodes.TASK_NOT_FOUND.getErrorMessage()));
 
+        AssigneeEntity entity = mapDtoToEntity(request, user, task);
         return mapEntityToDto(assigneeRepository.save(entity));
     }
 
@@ -50,11 +54,12 @@ public class AssigneeService {
         AssigneeEntity assignee = assigneeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.ASSIGNEE_NOT_FOUND.getErrorCode(), ApiErrorCodes.ASSIGNEE_NOT_FOUND.getErrorMessage()));
 
-        TeamEntity team = teamRepo.findById(request.getTeamId())
-                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.TEAM_NOT_FOUND.getErrorCode(), ApiErrorCodes.TEAM_NOT_FOUND.getErrorMessage()));
+        TaskEntity task = taskRepo.findById(request.getTaskId())
+                .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.TASK_NOT_FOUND.getErrorCode(), ApiErrorCodes.TASK_NOT_FOUND.getErrorMessage()));
 
+        assignee.setTitle(request.getTitle());
         assignee.setDescription(request.getDescription());
-        assignee.setTeam(team);
+        assignee.setTask(task);
 
         return mapEntityToDto(assigneeRepository.save(assignee));
     }
@@ -69,23 +74,22 @@ public class AssigneeService {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy);
 
         var paginatedResult = assigneeRepository.findAll(pageRequest);
-        List<AssigneeResponse> responses = paginatedResult.getContent().stream()
+        List<AssigneeResponse> assigneeResponses = paginatedResult.getContent().stream()
                 .map(this::mapEntityToDto)
                 .collect(Collectors.toList());
 
-        return new PaginatedResp<>(paginatedResult.getTotalElements(), paginatedResult.getTotalPages(), page, responses);
+        return new PaginatedResp<>(paginatedResult.getTotalElements(), paginatedResult.getTotalPages(), page, assigneeResponses);
     }
 
-    public List<AssigneeResponse> createAssigneesInBulk(List<AssigneeRequest> requests) {
-        List<AssigneeEntity> entities = requests.stream().map(request -> {
-            TeamEntity team = teamRepo.findById(request.getTeamId())
-                    .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.TEAM_NOT_FOUND.getErrorCode(), ApiErrorCodes.TEAM_NOT_FOUND.getErrorMessage()));
+    public List<AssigneeResponse> createAssigneesInBulk(List<AssigneeRequest> assigneeRequests) {
+        List<AssigneeEntity> entities = assigneeRequests.stream().map(request -> {
+            UserEntity user = userRepository.findById(request.getUserId())
+                    .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.USER_NOT_FOUND.getErrorCode(), ApiErrorCodes.USER_NOT_FOUND.getErrorMessage()));
 
-            AssigneeEntity entity = new AssigneeEntity();
-            entity.setDescription(request.getDescription());
-            entity.setTeam(team);
+            TaskEntity task = taskRepo.findById(request.getTaskId())
+                    .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.TASK_NOT_FOUND.getErrorCode(), ApiErrorCodes.TASK_NOT_FOUND.getErrorMessage()));
 
-            return entity;
+            return mapDtoToEntity(request, user, task);
         }).collect(Collectors.toList());
 
         List<AssigneeEntity> savedEntities = assigneeRepository.saveAll(entities);
@@ -93,28 +97,44 @@ public class AssigneeService {
     }
 
     public List<AssigneeResponse> updateAssigneesInBulk(AssigneeBulkUpdateRequest request) {
-        List<AssigneeEntity> entities = request.getAssignees().stream().map(updateRequest -> {
-            AssigneeEntity existingEntity = assigneeRepository.findById(updateRequest.getId())
+        List<AssigneeEntity> assigneesToUpdate = request.getAssignees().stream().map(updateRequest -> {
+            AssigneeEntity existingAssignee = assigneeRepository.findById(updateRequest.getId())
                     .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.ASSIGNEE_NOT_FOUND.getErrorCode(), ApiErrorCodes.ASSIGNEE_NOT_FOUND.getErrorMessage()));
 
-            TeamEntity team = teamRepo.findById(updateRequest.getTeamId())
-                    .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.TEAM_NOT_FOUND.getErrorCode(), ApiErrorCodes.TEAM_NOT_FOUND.getErrorMessage()));
+            TaskEntity task = taskRepo.findById(updateRequest.getTaskId())
+                    .orElseThrow(() -> new NoSuchElementFoundException(ApiErrorCodes.TASK_NOT_FOUND.getErrorCode(), ApiErrorCodes.TASK_NOT_FOUND.getErrorMessage()));
 
-            existingEntity.setDescription(updateRequest.getDescription());
-            existingEntity.setTeam(team);
+            existingAssignee.setTitle(updateRequest.getTitle());
+            existingAssignee.setDescription(updateRequest.getDescription());
+            existingAssignee.setTask(task);
 
-            return existingEntity;
+            return existingAssignee;
         }).collect(Collectors.toList());
+        List<AssigneeEntity> updatedAssignees = assigneeRepository.saveAll(assigneesToUpdate);
 
-        List<AssigneeEntity> updatedEntities = assigneeRepository.saveAll(entities);
-        return updatedEntities.stream().map(this::mapEntityToDto).collect(Collectors.toList());
+        return updatedAssignees.stream()
+                .map(this::mapEntityToDto)
+                .collect(Collectors.toList());
+    }
+
+    private AssigneeEntity mapDtoToEntity(AssigneeRequest request, UserEntity user, TaskEntity task) {
+        AssigneeEntity entity = new AssigneeEntity();
+        entity.setTitle(request.getTitle());
+        entity.setDescription(request.getDescription());
+        entity.setUser(user);
+        entity.setTask(task);
+        return entity;
     }
 
     private AssigneeResponse mapEntityToDto(AssigneeEntity entity) {
         AssigneeResponse response = new AssigneeResponse();
         response.setId(entity.getId());
+        response.setTitle(entity.getTitle());
         response.setDescription(entity.getDescription());
-        response.setTeamId(entity.getTeam().getId());
+        response.setTaskId(entity.getTask().getId());
+        response.setTaskName(entity.getTask().getTitle());
+        response.setUserId(entity.getUser().getId());
+        response.setUserName(entity.getUser().getUsername());
         return response;
     }
 }
